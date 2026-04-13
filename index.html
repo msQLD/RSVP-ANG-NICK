@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RSVP</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+<style>
+body {
+font-family: Arial, sans-serif;
+background:#f5f7fb;
+margin:0;
+padding:40px;
+display:flex;
+justify-content:center;
+}
+
+.card {
+background:white;
+padding:30px;
+border-radius:14px;
+max-width:520px;
+width:100%;
+box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+h1 {margin-top:0;}
+
+input,select,textarea {
+width:100%;
+padding:12px;
+margin-top:6px;
+margin-bottom:16px;
+border-radius:8px;
+border:1px solid #dcdcdc;
+font-size:15px;
+}
+
+button {
+background:#1f6feb;
+color:white;
+padding:14px;
+border:none;
+border-radius:10px;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+width:100%;
+}
+
+button:hover {background:#1559c1;}
+
+.nameRow {margin-bottom:10px;}
+
+.success {color:green;font-weight:bold;margin-top:10px;}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h1>RSVP</h1>
+
+<form id="form">
+
+<label>Your Name</label>
+<input required id="contactName">
+
+<label>Number of guests</label>
+<select id="guestCount" required>
+<option value="">Select</option>
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5</option>
+<option>6</option>
+</select>
+
+<div id="guestList"></div>
+
+<label>Optional note</label>
+<textarea id="notes" placeholder="Example: Food allergies, dietary requirements, accessibility needs, or anything else you'd like Ang & Nick to know"></textarea>
+
+<button>Submit RSVP</button>
+
+<div class="success" id="status"></div>
+
+</form>
+
+</div>
+
+<script>
+
+emailjs.init("An10yOY277S52hqu7");
+
+const guestCount=document.getElementById("guestCount");
+const guestList=document.getElementById("guestList");
+
+guestCount.onchange=()=>{
+
+guestList.innerHTML="";
+
+for(let i=1;i<=guestCount.value;i++){
+
+guestList.innerHTML+=`
+
+<div class="nameRow">
+<input placeholder="Guest ${i} name" required id="guest_${i}">
+</div>
+
+`
+
+}
+
+}
+
+document.getElementById("form").onsubmit=async e=>{
+
+e.preventDefault();
+
+let contact=document.getElementById("contactName").value;
+let count=guestCount.value;
+let notes=document.getElementById("notes").value;
+
+let names=[];
+
+for(let i=1;i<=count;i++){
+
+names.push(document.getElementById(`guest_${i}`).value);
+
+}
+
+let message=`G'day Ang & Nick!!!
+
+Please accept this RSVP for ${count} people
+
+Main contact:
+${contact}
+
+Guest names:
+${names.join("\n")}
+
+Notes:
+${notes}
+`;
+
+document.getElementById("status").innerHTML="Sending...";
+
+try {
+
+await emailjs.send("service_6de9onx","template_yn0z3fr",{
+message:message,
+contact_name:contact,
+guest_count:count,
+guest_names:names.join(", "),
+notes:notes
+});
+
+document.getElementById("status").innerHTML="Sent electronically ✔ Opening SMS...";
+
+} catch(err) {
+
+document.getElementById("status").innerHTML="Email send failed – opening SMS...";
+
+}
+
+setTimeout(()=>{
+
+location.href="sms:0432399171?body="+encodeURIComponent(message);
+
+},500);
+
+}
+
+</script>
+
+</body>
+
+</html>
