@@ -868,7 +868,7 @@
           String(guestCount),
           "",
           "Guest names:",
-          guestNames.length ? guestNames.map((name, index) => (index + 1) + ". " + name).join("\\n") : "-"
+          guestNames.length ? guestNames.map((name, index) => (index + 1) + ". " + name).join("<br>") : "-"
         );
       }
 
@@ -880,7 +880,7 @@
         responsePhrase,
         guestCount,
         guestNames,
-        message: lines.join("\\n")
+        message: lines.join("<br>")
       };
     }
 
@@ -1007,6 +1007,8 @@
           bcc: CONFIG.bcc,
           subject: CONFIG.subject,
           message: data.message,
+          message_html: data.message,
+          message_text: data.message.replace(/<br>/g, "\n"),
           contact_name: contactName,
           response_phrase: data.responsePhrase,
           guest_count: data.guestCount,
