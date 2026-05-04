@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RSVP</title>
+
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #fff;
+    text-align: center;
+    padding: 40px;
+}
+
+.container {
+    max-width: 500px;
+    margin: auto;
+}
+
+input, select, textarea, button {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+button {
+    background: #b76e79;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+#successMessage {
+    display: none;
+    margin-top: 20px;
+    color: #b76e79;
+    font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>RSVP</h1>
+
+    <input type="text" id="guest_name" placeholder="Your Name" required>
+    <input type="email" id="guest_email" placeholder="Your Email" required>
+    <input type="text" id="guest_phone" placeholder="Phone Number">
+
+    <select id="attending">
+        <option value="">Will you be attending?</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+    </select>
+
+    <input type="number" id="guest_count" placeholder="Number of Guests">
+
+    <textarea id="message" placeholder="Message"></textarea>
+
+    <button onclick="sendEmail()">Submit RSVP</button>
+
+    <div id="successMessage">
+        Angela and Nicholas<br>
+        are grateful for your response ❤️
+    </div>
+</div>
+
+<script>
+(function(){
+    emailjs.init("YOUR_PUBLIC_KEY");
+})();
+
+function sendEmail() {
+
+    const data = {
+        guest_name: document.getElementById("guest_name").value,
+        guest_email: document.getElementById("guest_email").value,
+        guest_phone: document.getElementById("guest_phone").value,
+        attending: document.getElementById("attending").value,
+        guest_count: document.getElementById("guest_count").value,
+        message: document.getElementById("message").value
+    };
+
+    emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", data)
+    .then(function(response) {
+        document.getElementById("successMessage").style.display = "block";
+    }, function(error) {
+        alert("Failed to send RSVP. Please try again.");
+        console.error(error);
+    });
+}
+</script>
+
+</body>
+</html>
